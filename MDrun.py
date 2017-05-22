@@ -32,7 +32,7 @@ def GetCharge (FileName): #gets charge variation
 	for line in ch:
 		if "  System has non-zero total charge: " in line:
 			if ": -" in line:
-				ncharge = line.replace("  System has non-zero total charge: -","")[0]
+				ncharge = line.replace("  System has non-zero total charge: -","").replace("\n","")
 				charge = 0
 			else:
 				ncharge = line.replace("  System has non-zero total charge: ","").replace("\n","")

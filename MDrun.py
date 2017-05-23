@@ -72,7 +72,7 @@ def writeItpTop(standard):
 
 
 def FilePrep (PDB,Standard): #creates a script that can be run on SBCB server
-	os.system("\n"+GromacsLocal+"pdb2gmx -f "+PDB+" -o "+Standard+".gro -i "+Standard+".itp -p "+Standard+".top -ignh -ff gromacs54e7 -water spc")
+	os.system("\n"+GromacsLocal+"pdb2gmx -f "+PDB+" -o "+Standard+".gro -i "+Standard+".itp -p "+Standard+".top -ignh -ff Gromos54e7 -water spc")
 	os.system("\n"+GromacsLocal+"editconf -f "+Standard+".gro -o "+Standard+"_box.gro -c -bt dodecahedron -d 1.0")
 	os.system("\n"+GromacsLocal+"solvate -cp "+Standard+"_box.gro -o "+Standard+"_sol.gro -p "+Standard+".top -cs")
 	os.system("\n"+GromacsLocal+"grompp -f em_steep.mdp -c "+Standard+"_sol.gro -p "+Standard+".top -o "+Standard+"_min.tpr")

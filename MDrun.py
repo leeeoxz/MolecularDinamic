@@ -32,28 +32,29 @@ def GetCharge (FileName): #gets charge variation
 	for line in ch:
 		if "  System has non-zero total charge: " in line:
 			if ": -" in line:
-				ncharge = line.replace("  System has non-zero total charge: -","").replace("\n","")
+				ncharge = line.replace("  System has non-zero total charge: -","")[0]
 				charge = 0
 			else:
 				ncharge = line.replace("  System has non-zero total charge: ","").replace("\n","")
 				charge = 1
+	print charge,ncharge[0]
 	return charge,int(ncharge[0])
 
 def WriteTxt (standard):
 	f= open("Script.sh","w")
 	f.write(Header)
-	f.write(ServerStartLocal+"grompp -f nvt.mdp -c "+standard+"_ions.gro -o "+standard+"_nvt.tpr -p "+standard+"5000.top -maxwarn 1")
-	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_nvt.tpr -deffnm "+standard+"_nvt")
-	f.write(ServerStartLocal+"grompp -f npt_relax4000.mdp -c "+standard+"_nvt.gro -o "+standard+"_npt_4000.tpr -p "+standard+"4000.top -t "+standard+"_nvt.cpt -maxwarn 1")
-	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_npt_4000.tpr -deffnm "+standard+"_npt_4000")
-	f.write(ServerStartLocal+"grompp -f npt_relax3000.mdp -c "+standard+"_npt_4000.gro -o "+standard+"_npt_3000.tpr -p "+standard+"3000.top -t "+standard+"_npt_4000.cpt -maxwarn 1")
-	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_npt_3000.tpr -deffnm "+standard+"_npt_3000")
-	f.write(ServerStartLocal+"grompp -f npt_relax2000.mdp -c "+standard+"_npt_3000.gro -o "+standard+"_npt_2000.tpr -p "+standard+"2000.top -t "+standard+"_npt_3000.cpt -maxwarn 1")
-	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_npt_2000.tpr -deffnm "+standard+"_npt_2000")
-	f.write(ServerStartLocal+"grompp -f npt_relax1000.mdp -c "+standard+"_npt_2000.gro -o "+standard+"_npt_1000.tpr -p "+standard+"1000.top -t "+standard+"_npt_2000.cpt -maxwarn 1")
-	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_npt_1000.tpr -deffnm "+standard+"_npt_1000")
-	f.write(ServerStartLocal+"grompp -f npt_prod_0-10ns.mdp -c "+standard+"_npt_1000.gro -o "+standard+"_prod_0-10ns.tpr -p "+standard+"1000.top -t "+standard+"_npt_relax1000.cpt -maxwarn 1")
-	f.write(ServerStartMpiLocal+"mdrun -nt 8 -v -s "+standard+"_prod_0-10ns.tpr -deffnm "+standard+"_prod_0-10ns")
+	f.write(ServerStartLocal+"grompp -f nvt.mdp -c "+standard+"_ions.gro -o "+standard+"_nvt.tpr -p "+standard+"5000.top -maxwarn 1\n")
+	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_nvt.tpr -deffnm "+standard+"_nvt\n")
+	f.write(ServerStartLocal+"grompp -f npt_relax4000.mdp -c "+standard+"_nvt.gro -o "+standard+"_npt_4000.tpr -p "+standard+"4000.top -t "+standard+"_nvt.cpt -maxwarn 1\n")
+	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_npt_4000.tpr -deffnm "+standard+"_npt_4000\n")
+	f.write(ServerStartLocal+"grompp -f npt_relax3000.mdp -c "+standard+"_npt_4000.gro -o "+standard+"_npt_3000.tpr -p "+standard+"3000.top -t "+standard+"_npt_4000.cpt -maxwarn 1\n")
+	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_npt_3000.tpr -deffnm "+standard+"_npt_3000\n")
+	f.write(ServerStartLocal+"grompp -f npt_relax2000.mdp -c "+standard+"_npt_3000.gro -o "+standard+"_npt_2000.tpr -p "+standard+"2000.top -t "+standard+"_npt_3000.cpt -maxwarn 1\n")
+	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_npt_2000.tpr -deffnm "+standard+"_npt_2000\n")
+	f.write(ServerStartLocal+"grompp -f npt_relax1000.mdp -c "+standard+"_npt_2000.gro -o "+standard+"_npt_1000.tpr -p "+standard+"1000.top -t "+standard+"_npt_2000.cpt -maxwarn 1\n")
+	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_npt_1000.tpr -deffnm "+standard+"_npt_1000\n")
+	f.write(ServerStartLocal+"grompp -f npt_prod_0-10ns.mdp -c "+standard+"_npt_1000.gro -o "+standard+"_prod_0-10ns.tpr -p "+standard+"1000.top -t "+standard+"_npt_relax1000.cpt -maxwarn 1\n")
+	f.write(ServerStartMpi+"mdrun -nt 8 -v -s "+standard+"_prod_0-10ns.tpr -deffnm "+standard+"_prod_0-10ns\n")
 	f.close()
 
 def writeItpTop(standard):
@@ -66,19 +67,19 @@ def writeItpTop(standard):
 		file = open(standard+".top","r")
 		writop = open(standard+str(i)+".top","w")
 		for line in file:
-			line = line.replace(standard".itp",standard+str(i)+".itp")
+			line = line.replace(standard+".itp",standard+str(i)+".itp")
 			writop.write(line)
 
 
 
 def FilePrep (PDB,Standard): #creates a script that can be run on SBCB server
-	os.system("\n"+GromacsLocal+"pdb2gmx -f "+PDB+" -o "+Standard+".gro -i "+Standard+".itp -p "+Standard+".top -ignh -ff Gromos54e7 -water spc")
+	os.system("\n"+GromacsLocal+"pdb2gmx -f "+PDB+" -o "+Standard+".gro -i "+Standard+".itp -p "+Standard+".top -ignh -ff gromos54a7 -water spc")
 	os.system("\n"+GromacsLocal+"editconf -f "+Standard+".gro -o "+Standard+"_box.gro -c -bt dodecahedron -d 1.0")
 	os.system("\n"+GromacsLocal+"solvate -cp "+Standard+"_box.gro -o "+Standard+"_sol.gro -p "+Standard+".top -cs")
 	os.system("\n"+GromacsLocal+"grompp -f em_steep.mdp -c "+Standard+"_sol.gro -p "+Standard+".top -o "+Standard+"_min.tpr")
 	os.system("\n"+GromacsLocal+"mdrun -v -s "+Standard+"_min.tpr -deffnm "+Standard+"_min")
 	os.system("\n"+GromacsLocal+"grompp -f ions.mdp -c "+Standard+"_min.gro -p "+Standard+".top -o "+Standard+"_genion.tpr > "+Standard+"charge.txt 2>&1")
-	charge= GetCharge(Standard+"charge.txt")
+	charge = GetCharge(Standard+"charge.txt")
 	if (charge[0]==0): #in case its a negative charge
 		os.system("\n"+GromacsLocal+"genion -s "+Standard+"_genion.tpr -o "+Standard+"_ions.gro -np "+str(charge[1])+" -pname NA -pq +1 -p "+Standard+".top < input1.txt")
 	if (charge[0]==1):
@@ -86,4 +87,3 @@ def FilePrep (PDB,Standard): #creates a script that can be run on SBCB server
 	writeItpTop(Standard)
 	WriteTxt(Standard)
 FilePrep(PdbFile,StandardName)
-
